@@ -25,10 +25,23 @@ class CVUtilsSpec extends FlatSpec with Matchers {
     imwrite("src/test/test_images/shrek_from_tensor.jpg", shrekFromTensor, Array(CV_8UC3))
   }
 
-  "byteArrayToImage(imageToByteArray(image))" should "presrve image" in {
+  "byteArrayToImage(imageToByteArray(image))" should "preserve image" in {
     // The same situation here
     val shrekImage = imread("src/test/test_images/shrek.jpg")
     val shrekFromBytes = byteArrayToImage(imageToByteArray(shrekImage))
     imwrite("src/test/test_images/shrek_from_bytes.jpg", shrekFromBytes, Array(CV_8UC3))
+  }
+
+  "imageToByteArray(byteArrayToImage(bytes))" should "preserve bytes" in {
+    val shrekImage = imread("src/test/test_images/shrek.jpg")
+    val shrekBytes = imageToByteArray(shrekImage)
+    val shrekBytesFromImage = imageToByteArray(byteArrayToImage(shrekBytes))
+    shrekBytes shouldEqual shrekBytesFromImage
+  }
+
+  "passing zeros to tensorToImage" should "result in a Black Square" in {
+    val tensor = Tensor.zeros(UINT8, Shape(3, 300, 300))
+    val imageFromTensor = tensorToImage(tensor)
+    imwrite("src/test/test_images/image_from_zeros.jpg", imageFromTensor)
   }
 }
